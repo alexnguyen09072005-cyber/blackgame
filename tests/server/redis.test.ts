@@ -149,12 +149,16 @@ describe("Redis server client", () => {
   });
 
   it.each([
-    ["AUTH", new Error("WRONGPASS invalid password")],
-    ["NETWORK", new TypeError("fetch failed")],
-    ["COMMAND", new Error("Command failed: ERR user_script:1")],
-    ["RESPONSE", Object.assign(new Error("bad payload"), { name: "ZodError" })],
-    ["UNKNOWN", new Error("unexpected failure")],
-  ] as const)("phân loại lỗi %s mà không lộ nguyên nhân gốc", async (reason, cause) => {
+    ["AUTH", "CREDENTIALS", new Error("WRONGPASS invalid password")],
+    ["NETWORK", "FETCH", new TypeError("fetch failed")],
+    ["COMMAND", "SCRIPT", new Error("Command failed: ERR user_script:1")],
+    [
+      "RESPONSE",
+      "STATE_SCHEMA",
+      Object.assign(new Error("bad payload"), { name: "ZodError" }),
+    ],
+    ["UNKNOWN", "UNKNOWN", new Error("unexpected failure")],
+  ] as const)("phân loại lỗi %s mà không lộ nguyên nhân gốc", async (reason, diagnostic, cause) => {
     process.env.UPSTASH_REDIS_REST_URL = "https://example.upstash.io";
     process.env.UPSTASH_REDIS_REST_TOKEN = "token-that-is-long-enough";
 
@@ -165,6 +169,7 @@ describe("Redis server client", () => {
     await expect(operation).rejects.toMatchObject({
       code: "REDIS_UNAVAILABLE",
       reason,
+      diagnostic,
       message: "Kho dữ liệu tạm thời không khả dụng. Vui lòng thử lại.",
     });
   });

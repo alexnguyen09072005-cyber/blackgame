@@ -40,6 +40,18 @@ export type RedisFailureReason =
   | "RESPONSE"
   | "UNKNOWN";
 
+export type RedisFailureDiagnostic =
+  | "CREDENTIALS"
+  | "PERMISSION"
+  | "CROSS_SLOT"
+  | "SCRIPT"
+  | "STATE_SCHEMA"
+  | "UPSTASH_JSON"
+  | "LOCAL_JSON"
+  | "FETCH"
+  | "TIMEOUT"
+  | "UNKNOWN";
+
 let cachedRedis: CachedRedis | undefined;
 
 export class RedisConfigurationError extends Error {
@@ -54,6 +66,7 @@ export class RedisConfigurationError extends Error {
 export class RedisUnavailableError extends Error {
   readonly code = "REDIS_UNAVAILABLE";
   readonly reason: RedisFailureReason;
+  readonly diagnostic: RedisFailureDiagnostic;
 
   constructor(cause?: unknown) {
     super("Kho dữ liệu tạm thời không khả dụng. Vui lòng thử lại.", {
@@ -61,13 +74,38 @@ export class RedisUnavailableError extends Error {
     });
     this.name = "RedisUnavailableError";
     this.reason = classifyRedisFailure(cause);
+    this.diagnostic = classifyRedisDiagnostic(cause);
   }
 }
 
-function classifyRedisFailure(error: unknown): RedisFailureReason {
+function redisErrorSummary(error: unknown): { name: string; summary: string } {
   const name = error instanceof Error ? error.name : "";
   const message = error instanceof Error ? error.message : String(error ?? "");
-  const summary = `${name} ${message}`.toLowerCase();
+  return { name, summary: `${name} ${message}`.toLowerCase() };
+}
+
+function classifyRedisDiagnostic(error: unknown): RedisFailureDiagnostic {
+  const { name, summary } = redisErrorSummary(error);
+  if (name === "ZodError") return "STATE_SCHEMA";
+  if (name === "UpstashJSONParseError") return "UPSTASH_JSON";
+  if (name === "SyntaxError") return "LOCAL_JSON";
+  if (/wrongpass|unauthori[sz]ed|invalid[^\n]{0,30}(token|password)|\b401\b/.test(summary)) {
+    return "CREDENTIALS";
+  }
+  if (/forbidden|readonly|noperm|\b403\b/.test(summary)) return "PERMISSION";
+  if (/crossslot/.test(summary)) return "CROSS_SLOT";
+  if (/unknown command|command failed|user_script|\beval\b|\bscript\b/.test(summary)) {
+    return "SCRIPT";
+  }
+  if (/timed? ?out|timeout|aborted/.test(summary)) return "TIMEOUT";
+  if (/fetch failed|network|econn|enotfound|socket|\bdns\b|exhausted all retries/.test(summary)) {
+    return "FETCH";
+  }
+  return "UNKNOWN";
+}
+
+function classifyRedisFailure(error: unknown): RedisFailureReason {
+  const { name, summary } = redisErrorSummary(error);
 
   if (
     /unauthori[sz]ed|forbidden|wrongpass|invalid[^\n]{0,30}(token|password)|authenticat|\b401\b|\b403\b/.test(

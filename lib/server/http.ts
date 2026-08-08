@@ -163,14 +163,14 @@ export function withApiErrors<T extends ApiHandler>(handler: T): T {
           requestId,
           name: error.name,
           ...(error instanceof RedisUnavailableError
-            ? { reason: error.reason }
+            ? { reason: error.reason, diagnostic: error.diagnostic }
             : {}),
         });
         return jsonError(
           new ApiError(503, error.code, error.message, {
             requestId,
             ...(error instanceof RedisUnavailableError
-              ? { reason: error.reason }
+              ? { reason: error.reason, diagnostic: error.diagnostic }
               : {}),
           }),
         );
