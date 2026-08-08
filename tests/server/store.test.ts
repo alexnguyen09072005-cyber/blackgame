@@ -78,6 +78,34 @@ class FakeRedis {
     } = structuredClone(state);
     // Match Redis Lua cjson's empty-table behavior for the regression test.
     if (value.solvedCases.length === 0) value.solvedCases = {};
+    // Upstash Lua cjson omits object properties whose decoded value is null.
+    const nullableValue = value as unknown as Record<string, unknown>;
+    if (value.cooldownUntil === null) delete nullableValue.cooldownUntil;
+    if (value.lastInteractionAt === null) delete nullableValue.lastInteractionAt;
+    return JSON.stringify(value);
+  }
+
+  private encodeInteraction(interaction: StoredInteraction): string {
+    const value = structuredClone(interaction) as StoredInteraction &
+      Record<string, unknown>;
+    for (const field of [
+      "finalizedAt",
+      "aiResults",
+      "finalResults",
+      "aiError",
+      "model",
+      "aiStartedAt",
+    ] as const) {
+      if (value[field] === null) delete value[field];
+    }
+    for (const field of ["aiResults", "finalResults"] as const) {
+      const results = value[field];
+      if (!Array.isArray(results)) continue;
+      for (const result of results as Array<Record<string, unknown>>) {
+        if (result.verdict === null) delete result.verdict;
+        if (result.finalCorrect === null) delete result.finalCorrect;
+      }
+    }
     return JSON.stringify(value);
   }
 
@@ -189,7 +217,7 @@ class FakeRedis {
       }
       interaction.aiAttempts = 1;
       interaction.aiStartedAt = Number(args[0]);
-      this.strings.set(keys[0]!, JSON.stringify(interaction));
+      this.strings.set(keys[0]!, this.encodeInteraction(interaction));
       return 1;
     }
 
@@ -207,7 +235,7 @@ class FakeRedis {
       }
       interaction.aiError =
         "AI_STALE: Tiến trình chấm đã kết thúc trước khi lưu được kết quả.";
-      const encoded = JSON.stringify(interaction);
+      const encoded = this.encodeInteraction(interaction);
       this.strings.set(keys[0]!, encoded);
       return encoded;
     }
@@ -219,7 +247,7 @@ class FakeRedis {
       interaction.aiError = null;
       interaction.model = args[1]!;
       if (interaction.status !== "FINALIZED") interaction.status = "AI_COMPLETE";
-      const encoded = JSON.stringify(interaction);
+      const encoded = this.encodeInteraction(interaction);
       this.strings.set(keys[0]!, encoded);
       return encoded;
     }
@@ -230,7 +258,7 @@ class FakeRedis {
       interaction.aiResults = null;
       interaction.aiError = args[0]!;
       if (args[1] === "1") interaction.model = args[2]!;
-      const encoded = JSON.stringify(interaction);
+      const encoded = this.encodeInteraction(interaction);
       this.strings.set(keys[0]!, encoded);
       return encoded;
     }
@@ -251,7 +279,7 @@ class FakeRedis {
       if (!interaction) return null;
       const allowUpdate = args[0] === "1";
       if (interaction.status === "FINALIZED" && !allowUpdate) {
-        return JSON.stringify(interaction);
+        return this.encodeInteraction(interaction);
       }
       const team = this.parseTeam(this.strings.get(keys[1]!) ?? args[1]!);
       const results = JSON.parse(args[2]!) as AdjudicationResult[];
@@ -279,7 +307,7 @@ class FakeRedis {
       interaction.finalResults = results;
       interaction.finalizedAt = Number(args[3]);
       interaction.status = "FINALIZED";
-      const encoded = JSON.stringify(interaction);
+      const encoded = this.encodeInteraction(interaction);
       this.strings.set(keys[0]!, encoded);
       this.strings.set(keys[1]!, this.encodeTeam(team));
       return encoded;

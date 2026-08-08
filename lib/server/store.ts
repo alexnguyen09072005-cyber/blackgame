@@ -121,14 +121,38 @@ function parseJson(value: unknown): unknown {
   return value;
 }
 
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function restoreMissingNulls(
+  value: Record<string, unknown>,
+  fields: readonly string[],
+): void {
+  for (const field of fields) {
+    if (!(field in value)) value[field] = null;
+  }
+}
+
+function normalizeStoredResults(value: unknown): void {
+  if (!Array.isArray(value)) return;
+  for (const result of value) {
+    if (!isPlainRecord(result)) continue;
+    if (result.itemType === "QUESTION" && !("finalCorrect" in result)) {
+      result.finalCorrect = null;
+    }
+    if (result.itemType === "FINAL_ANSWER" && !("verdict" in result)) {
+      result.verdict = null;
+    }
+  }
+}
+
 function parseTeamState(value: unknown, expectedTeamId: string): TeamState {
   const decoded = parseJson(value);
   // Redis Lua's cjson represents an empty Lua table as `{}`. An empty JSON
   // solvedCases array can therefore round-trip as a plain empty object.
   if (
-    decoded &&
-    typeof decoded === "object" &&
-    !Array.isArray(decoded) &&
+    isPlainRecord(decoded) &&
     "solvedCases" in decoded
   ) {
     const solvedCases = decoded.solvedCases;
@@ -141,6 +165,10 @@ function parseTeamState(value: unknown, expectedTeamId: string): TeamState {
       decoded.solvedCases = [];
     }
   }
+  if (isPlainRecord(decoded)) {
+    // Upstash's Lua cjson omits object properties whose value is JSON null.
+    restoreMissingNulls(decoded, ["cooldownUntil", "lastInteractionAt"]);
+  }
   const state = teamStateSchema.parse(decoded);
   if (state.teamId !== expectedTeamId) {
     throw new Error("Redis returned state for a different team.");
@@ -149,7 +177,20 @@ function parseTeamState(value: unknown, expectedTeamId: string): TeamState {
 }
 
 function parseInteraction(value: unknown): StoredInteraction {
-  return storedInteractionSchema.parse(parseJson(value));
+  const decoded = parseJson(value);
+  if (isPlainRecord(decoded)) {
+    restoreMissingNulls(decoded, [
+      "finalizedAt",
+      "aiResults",
+      "finalResults",
+      "aiError",
+      "model",
+      "aiStartedAt",
+    ]);
+    normalizeStoredResults(decoded.aiResults);
+    normalizeStoredResults(decoded.finalResults);
+  }
+  return storedInteractionSchema.parse(decoded);
 }
 
 function parseOptionalInteraction(value: unknown): StoredInteraction | null {
