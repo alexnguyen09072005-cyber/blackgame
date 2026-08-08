@@ -26,7 +26,8 @@ request đồng thời của cùng OG được kiểm tra/chốt quota trước 
 
 ## Tài khoản 12 OG
 
-Tên đăng nhập là `og01` đến `og12`. Bảng mật khẩu để in và phát riêng nằm tại
+Tên đăng nhập là `og01` đến `og12`; mỗi OG có mã mật khẩu 3 ký tự riêng cho sự
+kiện ngắn. Bảng mật khẩu để in và phát riêng nằm tại
 [`docs/OG_ACCOUNTS.md`](docs/OG_ACCOUNTS.md).
 
 > Repository này **bắt buộc phải để Private**. `game.txt`, dữ liệu server và tài

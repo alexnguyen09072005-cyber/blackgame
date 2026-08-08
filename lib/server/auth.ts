@@ -11,7 +11,7 @@ import {
 } from "./og-accounts";
 
 export const SESSION_COOKIE_NAME = "black_stories_session";
-const SESSION_VERSION = 2;
+const SESSION_VERSION = 3;
 const DEFAULT_SESSION_SECONDS = 60 * 60 * 24;
 const DEVELOPMENT_SESSION_SECRET =
   "black-stories-local-development-secret-do-not-use-in-production";
