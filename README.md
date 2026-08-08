@@ -63,7 +63,7 @@ npm run build
 | Biến | Ý nghĩa |
 | --- | --- |
 | `OPENAI_API_KEY` | API key OpenAI; có thể bổ sung sau khi hoàn thiện giao diện |
-| `OPENAI_MODEL` | Model chấm tự động, mặc định `gpt-5.6-terra` |
+| `OPENAI_MODEL` | Model chấm tự động, mặc định `gpt-5.6-sol` |
 | `MAX_AI_CALLS` | Giới hạn số call AI phía ứng dụng, mặc định `500` |
 | `SESSION_SECRET` | Chuỗi ngẫu nhiên tối thiểu 32 ký tự ở production |
 | `UPSTASH_REDIS_REST_URL` | REST URL của Upstash Redis; bắt buộc |
@@ -93,7 +93,9 @@ server. API và client chỉ nhận tiêu đề, độ khó và đề bài công
 Một lượt dùng một call OpenAI Responses API với Structured Outputs. Prompt chỉ
 gửi dữ kiện của vụ án đang chơi, yêu cầu không tiết lộ đáp án và bỏ qua mọi chỉ
 dẫn do người chơi chèn vào nội dung. Dữ liệu trả về được kiểm tra lại bằng Zod
-trước khi ghi kết quả.
+trước khi ghi kết quả. Đáp án cuối được chấp nhận khi đúng cú twist hoặc cơ chế
+cốt lõi; không bắt người chơi kể đủ mọi chi tiết hay dùng đúng câu chữ của đáp
+án mẫu.
 
 Nguồn hiện có mâu thuẫn ở vụ 2, 3 và 9; ứng dụng giữ nguyên các nhánh thay vì tự
 bịa cách hòa giải. Chi tiết nằm tại
