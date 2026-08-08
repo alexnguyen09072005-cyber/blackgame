@@ -33,6 +33,13 @@ type CachedRedis = RedisCredentials & {
   client: Redis;
 };
 
+export type RedisFailureReason =
+  | "AUTH"
+  | "NETWORK"
+  | "COMMAND"
+  | "RESPONSE"
+  | "UNKNOWN";
+
 let cachedRedis: CachedRedis | undefined;
 
 export class RedisConfigurationError extends Error {
@@ -46,13 +53,52 @@ export class RedisConfigurationError extends Error {
 
 export class RedisUnavailableError extends Error {
   readonly code = "REDIS_UNAVAILABLE";
+  readonly reason: RedisFailureReason;
 
   constructor(cause?: unknown) {
     super("Kho dữ liệu tạm thời không khả dụng. Vui lòng thử lại.", {
       cause,
     });
     this.name = "RedisUnavailableError";
+    this.reason = classifyRedisFailure(cause);
   }
+}
+
+function classifyRedisFailure(error: unknown): RedisFailureReason {
+  const name = error instanceof Error ? error.name : "";
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  const summary = `${name} ${message}`.toLowerCase();
+
+  if (
+    /unauthori[sz]ed|forbidden|wrongpass|invalid[^\n]{0,30}(token|password)|authenticat|\b401\b|\b403\b/.test(
+      summary,
+    )
+  ) {
+    return "AUTH";
+  }
+  if (
+    /crossslot|unknown command|command failed|user_script|\beval\b|\bscript\b|readonly|noperm/.test(
+      summary,
+    )
+  ) {
+    return "COMMAND";
+  }
+  if (
+    name === "ZodError" ||
+    name === "SyntaxError" ||
+    name === "UpstashJSONParseError" ||
+    /parse response|invalid[^\n]{0,30}response/.test(summary)
+  ) {
+    return "RESPONSE";
+  }
+  if (
+    /fetch failed|network|timed? ?out|timeout|econn|enotfound|socket|\bdns\b|aborted|exhausted all retries/.test(
+      summary,
+    )
+  ) {
+    return "NETWORK";
+  }
+  return "UNKNOWN";
 }
 
 function environmentValue(name: string): string | null {

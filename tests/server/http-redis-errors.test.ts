@@ -44,6 +44,7 @@ describe("HTTP Redis error mapping", () => {
 
     expect(response.status).toBe(503);
     expect(payload).toContain("REDIS_UNAVAILABLE");
+    expect(payload).toContain('"reason":"UNKNOWN"');
     expect(payload).not.toContain("secret.upstash.io");
     expect(payload).not.toContain("token-secret");
     expect(JSON.stringify(logger.mock.calls)).not.toContain("secret.upstash.io");

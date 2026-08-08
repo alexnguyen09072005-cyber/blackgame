@@ -162,9 +162,17 @@ export function withApiErrors<T extends ApiHandler>(handler: T): T {
         console.error("[api] Kho dữ liệu không khả dụng", {
           requestId,
           name: error.name,
+          ...(error instanceof RedisUnavailableError
+            ? { reason: error.reason }
+            : {}),
         });
         return jsonError(
-          new ApiError(503, error.code, error.message, { requestId }),
+          new ApiError(503, error.code, error.message, {
+            requestId,
+            ...(error instanceof RedisUnavailableError
+              ? { reason: error.reason }
+              : {}),
+          }),
         );
       }
       const requestId = crypto.randomUUID();
