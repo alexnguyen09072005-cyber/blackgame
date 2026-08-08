@@ -12,8 +12,8 @@ import type {
 } from "@/lib/domain/types";
 import { getCaseById, HAS_GAME_RULES } from "@/lib/server/cases";
 
-export const DEFAULT_OPENAI_MODEL = "gpt-5.6-sol";
-export const OPENAI_REASONING_EFFORT = "medium" as const;
+export const DEFAULT_OPENAI_MODEL = "gpt-5.6-terra";
+export const OPENAI_REASONING_EFFORT = "low" as const;
 // Leave enough headroom inside the 30-second route duration to persist a safe
 // failure state before the serverless invocation is terminated.
 const OPENAI_TIMEOUT_MS = 20_000;

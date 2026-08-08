@@ -63,7 +63,7 @@ npm run build
 | Biến | Ý nghĩa |
 | --- | --- |
 | `OPENAI_API_KEY` | API key OpenAI; có thể bổ sung sau khi hoàn thiện giao diện |
-| `OPENAI_MODEL` | Model chấm tự động, mặc định `gpt-5.6-sol` |
+| `OPENAI_MODEL` | Model chấm tự động, mặc định `gpt-5.6-terra` |
 | `MAX_AI_CALLS` | Giới hạn số call AI phía ứng dụng, mặc định `500` |
 | `SESSION_SECRET` | Chuỗi ngẫu nhiên tối thiểu 32 ký tự ở production |
 | `UPSTASH_REDIS_REST_URL` | REST URL của Upstash Redis; bắt buộc |

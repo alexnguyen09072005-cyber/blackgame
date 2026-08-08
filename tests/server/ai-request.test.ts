@@ -54,7 +54,7 @@ afterAll(() => {
 });
 
 describe("OpenAI adjudication request", () => {
-  it("dùng Sol, reasoning medium và Structured Outputs an toàn", async () => {
+  it("dùng Terra, reasoning low và Structured Outputs an toàn", async () => {
     await adjudicateItems([
       {
         id: "item-1",
@@ -72,9 +72,9 @@ describe("OpenAI adjudication request", () => {
     expect(mocks.parse).toHaveBeenCalledOnce();
     expect(mocks.parse).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: "gpt-5.6-sol",
+        model: "gpt-5.6-terra",
         store: false,
-        reasoning: { effort: "medium" },
+        reasoning: { effort: "low" },
         text: expect.objectContaining({
           format: { type: "json_schema" },
           verbosity: "low",
@@ -85,7 +85,7 @@ describe("OpenAI adjudication request", () => {
   });
 
   it("vẫn cho phép cấu hình model bằng biến môi trường", async () => {
-    process.env.OPENAI_MODEL = "gpt-5.6-terra";
+    process.env.OPENAI_MODEL = "gpt-5.6-sol";
 
     const result = await adjudicateItems([
       {
@@ -97,8 +97,8 @@ describe("OpenAI adjudication request", () => {
     ]);
 
     expect(mocks.parse).toHaveBeenCalledWith(
-      expect.objectContaining({ model: "gpt-5.6-terra" }),
+      expect.objectContaining({ model: "gpt-5.6-sol" }),
     );
-    expect(result.model).toBe("gpt-5.6-terra");
+    expect(result.model).toBe("gpt-5.6-sol");
   });
 });

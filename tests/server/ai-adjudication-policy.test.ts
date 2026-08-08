@@ -7,9 +7,9 @@ import {
 } from "../../lib/server/ai";
 
 describe("cấu hình AI chấm tự động", () => {
-  it("dùng model chất lượng cao với mức reasoning cân bằng", () => {
-    expect(DEFAULT_OPENAI_MODEL).toBe("gpt-5.6-sol");
-    expect(OPENAI_REASONING_EFFORT).toBe("medium");
+  it("dùng model nhanh với reasoning thấp cho lượt chấm trực tiếp", () => {
+    expect(DEFAULT_OPENAI_MODEL).toBe("gpt-5.6-terra");
+    expect(OPENAI_REASONING_EFFORT).toBe("low");
   });
 
   it("chấm đáp án cuối theo ý chính thay vì checklist nguyên văn", () => {
