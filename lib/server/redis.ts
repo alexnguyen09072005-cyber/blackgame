@@ -13,6 +13,11 @@ const REDIS_ENV_PAIRS = [
     token: "UPSTASH_REDIS_REST_TOKEN",
   },
   {
+    // Vercel Marketplace prepends the project's custom integration prefix.
+    url: "UPSTASH_REDIS_REST_KV_REST_API_URL",
+    token: "UPSTASH_REDIS_REST_KV_REST_API_TOKEN",
+  },
+  {
     // Legacy Vercel KV/Upstash integrations use these aliases.
     url: "KV_REST_API_URL",
     token: "KV_REST_API_TOKEN",

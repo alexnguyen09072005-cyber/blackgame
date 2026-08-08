@@ -25,6 +25,8 @@ import {
 const REDIS_ENV_NAMES = [
   "UPSTASH_REDIS_REST_URL",
   "UPSTASH_REDIS_REST_TOKEN",
+  "UPSTASH_REDIS_REST_KV_REST_API_URL",
+  "UPSTASH_REDIS_REST_KV_REST_API_TOKEN",
   "KV_REST_API_URL",
   "KV_REST_API_TOKEN",
   "BLACKGAME_REDIS_PREFIX",
@@ -91,6 +93,21 @@ describe("Redis server client", () => {
     resetRedisClientForTests();
     process.env.UPSTASH_REDIS_REST_URL = "https://partial.upstash.io";
     expect(() => getRedis()).toThrow(RedisConfigurationError);
+  });
+
+  it("hỗ trợ tên do Vercel Marketplace tạo với custom prefix", () => {
+    process.env.UPSTASH_REDIS_REST_KV_REST_API_URL =
+      "https://marketplace.upstash.io";
+    process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN =
+      "marketplace-token-is-long-enough";
+
+    expect(() => getRedis()).not.toThrow();
+    expect(mocks.constructor).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: "https://marketplace.upstash.io",
+        token: "marketplace-token-is-long-enough",
+      }),
+    );
   });
 
   it("fail closed khi credentials, URL hoặc namespace không hợp lệ", () => {
