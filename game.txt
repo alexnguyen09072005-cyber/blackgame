@@ -1,0 +1,160 @@
+Note: GM nhìn màu vòng tay để track số câu hỏi, thời gian trả lời, và số câu trả lời đúng của mỗi đội. 
+Luật chơi Black Story
+Có 3 Quản trò, mỗi Quản trò phụ trách 4 OG và sẽ ngồi cố định tại Sapphire Pavilion.
+Mỗi OG có thể suy luận nhiều case cùng lúc hoặc giải từng case một.
+Mỗi lần interact với Quản trò, OG được đưa ra tối đa 5 câu, bao gồm câu hỏi và/hoặc câu trả lời (ví dụ: 5 câu hỏi, 5 câu trả lời, hoặc kết hợp cả hai).
+Sau mỗi lần interact, OG phải chờ 5 phút cooldown mới được tương tác tiếp.
+Câu hỏi nên ở dạng Yes/No. Quản trò chỉ trả lời bằng một trong các đáp án: "Đúng", "Sai", "Không quan trọng", hoặc "Không thể trả lời".
+OG được phép đưa ra không giới hạn số câu hỏi và số lần trả lời trong suốt trò chơi. Chỉ câu trả lời đúng mới được ghi nhận.
+Xếp hạng
+Ưu tiên theo thứ tự:
+Số case giải đúng (nhiều hơn xếp trên).
+Thời gian ghi nhận câu trả lời đúng (sớm hơn xếp trên).
+Tổng số câu hỏi đã sử dụng (ít hơn xếp trên).
+Quản trò cần ghi nhận
+Số câu hỏi mỗi OG đã sử dụng.
+Thời điểm mỗi lần tương tác (để tính 5 phút cooldown).
+Thời gian OG trả lời đúng từng case.
+
+
+Ví Dụ Mẫu
+Hãy ví dụ trò chơi cho đội đến trước như sau (Hai quản trò thay phiên nhau đặt câu hỏi và trả lời)
+ĐỀ BÀI (Quản trò đọc cho cả nhóm): "Một người đàn ông nằm chết trên một sa mạc mênh mông. Trên tay anh ta cầm một mẩu que diêm. Ngoài ra không có bất kỳ dấu vết hay vật dụng nào khác xung quanh. Chuyện gì đã xảy ra?"
+Diễn biến các lượt hỏi (Tư duy loại trừ theo lượt):
+Người 1: "Anh ta bị giết đúng không?"
+Quản trò: "Sai." (Loại trừ khả năng có sát thủ).
+Người 2: "Mẩu que diêm trên tay anh ta có bị cháy không?"
+Quản trò: "Không quan trọng." (Gợi ý: Bản chất việc diêm cháy hay không không phải chìa khóa).
+Người 3: "Anh ta chết vì khát đúng không?"
+Quản trò: "Đúng." (Xác định được nguyên nhân cái chết là do môi trường sa mạc).
+Người 4: "Có phải anh ta tự đi bộ vào sa mạc rồi bị lạc không?"
+Quản trò: "Sai." (Gợi ý: Anh ta xuất hiện ở sa mạc bằng cách khác).
+Người 5: "Anh ta rơi từ trên trời xuống đúng không?"
+Quản trò: "Đúng!" (Manh mối lớn: Rơi từ trên cao xuống sa mạc).
+Người 6: "Anh ta đi máy bay hoặc khinh khí cầu đúng không?"
+Quản trò: "Đúng."
+Người 7: "Mẩu que diêm dùng để rút thăm đúng không?"
+Quản trò: "Đúng!!" (Lúc này logic bắt đầu lộ diện: Rút thăm bằng diêm trên một phương tiện bay).
+Người 8 (Sau khi xâu chuỗi các lượt trước): "Có phải phương tiện bay gặp sự cố, họ phải giảm trọng lượng nhưng vẫn không đủ, nên phải rút thăm xem ai phải nhảy xuống không?"
+Quản trò: "ĐÚNG CHÍNH XÁC!"
+ĐÁP ÁN TOÀN VĂN (Chỉ Quản trò nắm giữ):
+Anh ta cùng một nhóm bạn đi du lịch bằng khinh khí cầu. Giữa sa mạc, khinh khí cầu bị rò rỉ khí và bắt đầu hạ cao độ một cách nguy hiểm. Họ đã vứt bỏ toàn bộ hành lý, thậm chí là quần áo nhưng khinh khí cầu vẫn tiếp tục rơi. Cuối cùng, họ buộc phải đưa ra quyết định nghiệt ngã: Rút thăm bằng các que diêm, ai rút phải que diêm ngắn hơn (hoặc mẩu diêm bẻ đôi) sẽ phải nhảy xuống để cứu những người còn lại. Người đàn ông này đã rút phải mẩu diêm đó, anh ta nhảy xuống, may mắn không chết vì cú rơi nhưng cuối cùng vẫn chết vì kiệt sức và khát giữa sa mạc.
+
+
+CÁC ĐỀ BÀI
+Reference: Situation puzzles 1 2
+🕵️‍♂️ Vụ án số 1: Cái chết trong căn phòng trống
+Độ khó: 3.5/5 (Thiên về tư duy logic vật lý và suy luận không gian)
+ĐỀ BÀI (Đọc cho người chơi): > "Một người đàn ông được tìm thấy đã chết trong tư thế treo cổ ngay chính giữa một căn phòng hoàn toàn trống không. Căn phòng trống trơn, không có bàn, không có ghế, không có bất kỳ đồ đạc hay vật nâng đỡ nào. Cửa phòng được khóa trái từ bên trong. Dưới sàn nhà chỉ có một vũng nước nhỏ ngay dưới chân anh ta. Cảnh sát xác định đây là một vụ tự tử. Hỏi anh ta đã treo cổ bằng cách nào?"
+Gợi ý hướng câu hỏi (Turn-based logic):
+Người chơi cần xác định vũng nước từ đâu mà có (Có phải nước mưa? Nước đổ từ ngoài vào? Có liên quan đến cơ thể anh ta?). Quản trò sẽ trả lời "Sai" cho đến khi họ hỏi: "Vũng nước ban đầu ở trạng thái khác đúng không?" -> Đúng.
+Tiếp tục suy luận: Trạng thái trước của nước là gì? -> Băng đá.
+ĐÁP ÁN BÍ MẬT:
+Người đàn ông đã tự tử bằng cách mang vào phòng một khối đá lạnh lớn và dày. Anh ta trèo lên khối đá đó, buộc dây thừng vào xà nhà rồi tròng vào cổ. Căn phòng được khóa kín. Theo thời gian, nhiệt độ phòng làm khối đá tan chảy hoàn toàn thành một vũng nước dưới sàn, khiến anh ta mất đi điểm tựa và bị treo lơ lửng. Vì đá đã tan hết thành nước nên khi cảnh sát phá cửa vào, căn phòng hoàn toàn trống không.
+🕵️‍♂️ Vụ án số 2: Tiếng còi định mệnh
+Độ khó: 4/5 (Thiên về tư duy nhân quả, logic tâm lý xã hội)
+ĐỀ BÀI (Đọc cho người chơi):
+"Một người đàn ông đang ngồi trong một toa tàu ngầm đang chạy. Khi tàu đi qua một đường hầm tối, anh ta đột ngột rút súng tự sát. Anh ta là một người hoàn toàn bình thường, không có bệnh lý tâm thần, không nợ nần, cuộc sống đang rất hạnh phúc. Tại sao anh ta lại làm vậy?"
+Gợi ý hướng câu hỏi (Turn-based logic):
+Người chơi sẽ hỏi về bóng tối: "Có phải anh ta sợ bóng tối?" -> Sai.
+Hỏi về sức khỏe: "Anh ta có bị bệnh gì không?" -> Đúng. (Manh mối lớn).
+Hỏi về việc điều trị: "Bệnh của anh ta vừa mới được chữa khỏi đúng không?" -> Đúng.
+Hỏi về mối quan hệ giữa bóng tối và căn bệnh: "Khi tàu vào đường hầm tối, anh ta tưởng căn bệnh của mình tái phát đúng không?" -> ĐÚNG.
+ĐÁP ÁN BÍ MẬT:
+Người đàn ông này vừa mới trải qua một ca phẫu thuật mắt thành công để chữa chứng mù bẩm sinh. Đây là lần đầu tiên trong đời anh ta được nhìn thấy ánh sáng và thế giới xung quanh. Trên đường từ bệnh viện trở về nhà bằng tàu hỏa, con tàu đột ngột lao vào một đường hầm dài và tối đen như mực. Vì chưa từng có kinh nghiệm đi tàu chui qua hầm, anh ta lầm tưởng rằng ca phẫu thuật đã thất bại và mình đã bị mù vĩnh viễn trở lại. Cú sốc tâm lý quá lớn và sự tuyệt vọng tột cùng trong khoảnh khắc đó đã khiến anh ta chọn cách tự sát.
+🕵️‍♂️ Vụ án số 3: Hộp diêm định mệnh
+Độ khó: 4.5/5 (Thiên về logic toán học, xác suất và bài toán loại trừ nhóm)
+ĐỀ BÀI (Đọc cho người chơi):
+"Một người đàn ông trung niên được tìm thấy đã chết tại một khu rừng hoang dã. Bên cạnh xác anh ta không có dấu vết ẩu đả, không có hung khí, chỉ có duy nhất một hộp diêm còn nguyên, bên trong chứa đầy các que diêm chưa từng được quẹt. Khám nghiệm tử thi cho thấy anh ta chết vì một phát đạn bắn thẳng vào tim. Cảnh sát kết luận đây là một vụ giết người và hộp diêm chính là bằng chứng tố cáo kẻ thủ ác. Tại sao hộp diêm chưa quẹt lại liên quan đến phát đạn?"
+Gợi ý hướng câu hỏi (Turn-based logic):
+Người chơi cần bóc tách mối quan hệ giữa hộp diêm và khẩu súng: "Hộp diêm có dùng để kích nổ súng không?" -> Sai.
+"Hộp diêm có thuộc về nạn nhân không?" -> Sai. (Nó thuộc về hung thủ).
+"Hung thủ đánh rơi hộp diêm?" -> Đúng.
+"Tại sao hung thủ mang hộp diêm mà không quẹt?" -> Hỏi sâu vào mục đích của hộp diêm: "Hộp diêm được dùng làm công cụ đo đạc hoặc tính toán đúng không?" -> Đúng (Gần ra đáp án).
+"Đếm số que diêm để tính khoảng cách/số bước đi đúng không?" -> ĐÚNG.
+ĐÁP ÁN BÍ MẬT:
+Nạn nhân và hung thủ trước đó đã xảy ra một cuộc tranh chấp nảy lửa và quyết định giải quyết bằng một cuộc đấu súng tay đôi cổ điển (Duel) theo luật: Hai người đứng quay lưng vào nhau, mỗi người đi về phía trước một số bước bằng nhau, sau đó quay lại bắn. Hung thủ là một kẻ gian lận; hắn đã lén bỏ một hộp diêm đầy vào túi áo ngực của nạn nhân để làm mục tiêu định vị, hoặc ngược lại, hắn dùng các que diêm trong túi của mình để đếm chính xác số bước đi trong bóng tối nhằm chiếm lợi thế về khoảng cách và góc bắn. Tuy nhiên, chi tiết sâu sắc nhất ở đây là: Hắn là một người mù thuận tay và đã dùng hộp diêm làm vật phát ra tiếng "lách cách" (bằng cách lắc nhẹ) để xác định phương hướng của đối thủ trước khi quay người bóp cò. Khi bỏ chạy, hắn đã đánh rơi hộp diêm dự phòng của mình tại hiện trường.
+🕵️‍♂️ Vụ án số 4: Vòng lặp tử thần (Chủ đề Thuật toán/Hệ thống)
+Độ khó: 4/5 (Đòi hỏi tư duy về nhân quả hệ thống và tài nguyên)
+ĐỀ BÀI:
+"Một nam thanh niên ngồi trước máy tính, viết một đoạn mã cực kỳ ngắn và cơ bản để in ra dòng chữ 'Hello'. Anh ta mỉm cười và ấn nút Chạy (Run). Vài phút sau, còi báo động của cả tòa nhà vang lên inh ỏi. Hệ thống phun nước khẩn cấp kích hoạt, làm ướt sũng mọi thứ. Anh ta bị cảnh sát vũ trang ập vào bắt giữ ngay sau đó với cáo buộc khủng bố, dù anh ta không hề có vũ khí hay chất nổ. Tại sao?"
+Gợi ý hướng câu hỏi (Turn-based logic):
+Người chơi sẽ hỏi về đoạn mã: "Đoạn mã đó có chứa virus không?" -> Sai.
+"Nội dung chữ 'Hello' có phải là mật mã kích hoạt bom không?" -> Sai.
+Bắt đầu hướng về phần cứng: "Việc chạy đoạn mã có ảnh hưởng đến phần cứng máy tính không?" -> Đúng.
+"Đoạn mã đó có bị lỗi không?" -> Đúng.
+"Nó có sinh ra nhiệt lượng không?" -> Đúng.
+Điểm then chốt: "Đoạn mã đó có tạo ra một vòng lặp vô hạn (infinite loop) làm quá tải CPU không?" -> ĐÚNG.
+ĐÁP ÁN BÍ MẬT:
+Nam thanh niên này đang thực tập tại trung tâm dữ liệu điều khiển hệ thống làm mát của một lò phản ứng hạt nhân (hoặc một server lưu trữ quốc gia trọng yếu). Anh ta lén dùng máy chủ chính để chạy thử một đoạn mã cá nhân. Tuy nhiên, anh ta mắc lỗi logic cơ bản, tạo ra một vòng lặp vô hạn (infinite loop) không có điểm dừng. Máy chủ phải dùng 100% tài nguyên CPU để xử lý, dẫn đến hiện tượng quá nhiệt cục bộ. Cảm biến nhiệt của tòa nhà nhận diện mức nhiệt lượng tăng đột biến này là hỏa hoạn, lập tức kích hoạt hệ thống phun nước và báo động an ninh quốc gia.
+🕵️‍♂️ Vụ án số 5: Bữa tiệc trên hoang đảo (Chủ đề Tâm lý/Suy luận u ám)
+Độ khó: 5/5 (Kinh điển, rùng rợn và đòi hỏi khả năng móc nối các sự kiện trong quá khứ)
+ĐỀ BÀI:
+"Hai người đàn ông bước vào một nhà hàng hải sản sang trọng ven biển. Cả hai cùng gọi món 'Thịt chim hải âu nướng'. Người thứ nhất cắn một miếng, nhai chậm rãi, nước mắt trào ra rồi đột ngột rút súng tự sát ngay tại bàn. Người thứ hai cắn một miếng, mỉm cười nhẹ nhõm, đặt nĩa xuống rồi lấy điện thoại gọi cho cảnh sát để tự thú tội giết người. Chuyện gì đã xảy ra?"
+Gợi ý hướng câu hỏi (Turn-based logic):
+"Món ăn có tẩm độc không?" -> Sai.
+"Hai người này có thù oán với nhau không?" -> Sai.
+"Họ đã từng ăn thịt chim hải âu trước đây chưa?" -> Đúng.
+"Miếng thịt trong nhà hàng có giống miếng thịt họ từng ăn trong quá khứ không?" -> Sai (Đây là câu hỏi đột phá).
+"Trong quá khứ, họ từng bị mắc kẹt ở đâu đó và thiếu thức ăn đúng không?" -> Đúng.
+"Có người thứ ba từng đi cùng họ nhưng đã chết đúng không?" -> Đúng.
+ĐÁP ÁN BÍ MẬT:
+Trong quá khứ, hai người đàn ông này cùng vợ của người thứ nhất bị đắm tàu và trôi dạt vào một hoang đảo. Hoàn cảnh cạn kiệt thức ăn khiến họ đối mặt với cái chết. Người vợ sau đó mất tích. Người thứ hai mang về một tảng thịt, nói dối rằng mình vừa săn được một con chim hải âu khổng lồ. Cả hai ăn "thịt chim" đó để sinh tồn cho đến khi được cứu.
+Tại nhà hàng, khi ăn thịt chim hải âu thật, người thứ nhất nhận ra mùi vị hoàn toàn khác biệt. Anh ta lập tức suy luận ra sự thật kinh hoàng: Trên đảo, anh ta đã ăn thịt chính người vợ của mình do người thứ hai sát hại. Cú sốc tâm lý khiến anh ta tự sát. Người thứ hai, khi thấy người thứ nhất tự sát, biết rằng bí mật tàn độc của mình đã bị lộ, nên đành gọi cảnh sát tự thú.
+🕵️‍♂️ Vụ án số 6: Cú nhảy hối hận (Chủ đề Môi trường/Vật lý rập khuôn)
+Độ khó: 4.5/5 (Rất dễ bị đánh lừa bởi những định kiến thông thường)
+ĐỀ BÀI:
+"Một người đàn ông đang đứng ở tầng 20 của một tòa nhà. Anh ta tuyệt vọng bước ra ngoài cửa sổ và nhảy xuống. Khi rơi ngang qua tầng 15, anh ta bất chợt nghe thấy tiếng chuông điện thoại reo vang từ trong một căn phòng. Ngay khoảnh khắc đó, anh ta khóc nấc lên và hối hận tột cùng vì đã nhảy. Tiếng chuông điện thoại đó có ý nghĩa gì?"
+Gợi ý hướng câu hỏi (Turn-based logic):
+"Có phải anh ta đang đợi một cuộc gọi quan trọng (vay tiền, cứu viện) không?" -> Sai.
+"Người gọi điện thoại có quen biết anh ta không?" -> Không quan trọng.
+"Có phải gia đình anh ta bị bắt cóc và tiếng chuông là tín hiệu thả người không?" -> Sai.
+Chuyển hướng sang bối cảnh thế giới: "Tòa nhà đó có người khác ngoài anh ta không?" -> Sai.
+"Thành phố đó có người khác sinh sống không?" -> Sai.
+"Trái Đất lúc đó còn ai sống sót ngoài anh ta không?" -> Đúng (Đây là mấu chốt).
+ĐÁP ÁN BÍ MẬT:
+Thế giới vừa trải qua một thảm họa hạt nhân (hoặc đại dịch toàn cầu) cực kỳ tàn khốc. Người đàn ông này đã sống sót và lang thang suốt nhiều năm ròng rã, tìm kiếm khắp mọi nơi nhưng không thấy một bóng người. Tin chắc rằng mình là sinh vật sống duy nhất còn sót lại trên Trái Đất, nỗi cô đơn và tuyệt vọng đã đẩy anh ta đến quyết định kết liễu cuộc đời. Tuy nhiên, khi đang rơi, tiếng chuông điện thoại reo lên là minh chứng vật lý không thể chối cãi rằng: Hệ thống liên lạc vẫn có người kích hoạt, tức là vẫn còn người sống sót ở đâu đó. Anh ta hối hận vì mình không chết bởi thảm họa, mà chết vì đã từ bỏ hy vọng quá sớm.
+
+🕵️‍♂️ Vụ án số 7: Bản nhạc câm lặng
+Độ khó: 5/5 (Thiên về tư duy logic vật lý, sóng âm và cơ chế thiết bị)
+ĐỀ BÀI:
+"Một nghệ sĩ vĩ cầm nổi tiếng đang biểu diễn độc tấu trên sân khấu lớn trước hàng ngàn khán giả. Giữa buổi diễn, anh ta đột ngột dừng lại, mặt tái mét. Anh ta không hề bị đột quỵ, nhạc cụ không hề bị hỏng và anh ta cũng không hề quên bài. Anh ta lập tức rời sân khấu, đi thẳng ra cây cầu gần nhất và nhảy xuống sông tự sát. Tại sao?"
+Gợi ý hướng câu hỏi (Turn-based logic):
+"Anh ta có nghe thấy âm thanh gì lạ không?" -> Sai (Ngược lại mới đúng).
+"Khán giả có phản ứng tiêu cực gì không?" -> Sai (Khán giả vẫn đang chăm chú).
+Hướng về thính giác của nạn nhân: "Anh ta đột ngột bị điếc đúng không?" -> Đúng.
+Hướng về nguyên nhân bị điếc: "Bản nhạc anh ta đang chơi có gì đặc biệt không?" -> Đúng.
+Chốt hạ logic: "Anh ta nhận ra mình bị điếc vì anh ta vẫn kéo đàn nhưng không nghe thấy tiếng, trong khi khán giả vẫn nghe thấy đúng không?" -> ĐÚNG.
+ĐÁP ÁN BÍ MẬT:
+Người nghệ sĩ này mắc một chứng bệnh về tai nhưng anh ta không hề hay biết. Trong bản nhạc anh ta đang biểu diễn, có một đoạn cao trào sử dụng các nốt nhạc có tần số cực cao (tiệm cận ngưỡng siêu âm). Khi anh ta kéo đến đoạn đó, tai của anh ta đột ngột bị tổn thương nghiêm trọng và mất hoàn toàn thính giác (bị điếc đột ngột).
+Vì là một thiên tài, anh ta biết rõ tay mình đang chuyển động chuẩn xác trên dây đàn, khán giả bên dưới vẫn đang say sưa lắng nghe (tức là cây đàn vẫn phát ra tiếng), nhưng tai anh ta lại là một khoảng lặng tuyệt đối. Nhận ra mình đã mất đi thứ quý giá nhất của một người làm nghệ thuật ngay trên sân khấu, anh ta sụp đổ hoàn toàn và chọn cách kết liễu cuộc đời.
+🕵️‍♂️ Vụ án số 8: Kẻ sát nhân vô hình
+Độ khó: 5/5 (Bẫy tâm lý rập khuôn về không gian và thời gian)
+ĐỀ BÀI:
+"Một người phụ nữ mua một căn nhà cũ ở vùng ngoại ô. Ngay đêm đầu tiên chuyển đến ngủ, cô đã bị bóp cổ chết ngay trên giường. Cảnh sát kiểm tra toàn bộ camera an ninh: Không một ai ra vào ngôi nhà. Cửa lớn và cửa sổ đều khóa chặt từ bên trong. Khám nghiệm tử thi khẳng định cô bị giết bởi lực tay của một người trưởng thành rất mạnh, hoàn toàn không phải tự tử hay do bệnh lý. Hỏi hung thủ đã vào và ra bằng cách nào?"
+Gợi ý hướng câu hỏi (Turn-based logic):
+"Hung thủ có trốn sẵn trong nhà trước khi cô ấy đến không?" -> Sai (Cảnh sát đã lục soát kỹ).
+"Có lối đi bí mật nào dưới lòng đất hay trên trần nhà không?" -> Sai.
+"Hung thủ có chạm vào người cô ấy vào đêm hôm đó không?" -> Sai (Câu này sẽ làm cả nhóm đứng hình).
+Bắt đầu phá vỡ rào cản thời gian: "Nạn nhân bị bóp cổ bằng tay, nhưng bàn tay đó không thuộc về một người có mặt ở đó lúc cô ấy chết đúng không?" -> Đúng.
+"Cơ chế giết người đã được thiết lập từ trước?" -> ĐÚNG.
+ĐÁP ÁN BÍ MẬT:
+Hung thủ chính là chủ cũ của căn nhà – một kẻ tâm thần phân liệt. Hắn không hề có mặt ở đó vào đêm xảy ra vụ án. Trước khi bán nhà, hắn đã lắp đặt một hệ thống bẫy cơ khí tinh vi ẩn bên trong chiếc giường gỗ kiên cố. Hệ thống này bao gồm hai cánh tay robot bằng thép mô phỏng chính xác kích thước tay người, nối với một cảm biến áp suất đặt dưới đệm và một chiếc đồng hồ hẹn giờ.
+Khi người phụ nữ nằm xuống đúng vị trí và đồng hồ điểm 12h đêm, hai cánh tay thép (được bọc lớp da nhân tạo để đánh lừa dấu vết khám nghiệm ban đầu) sẽ bật ra từ thành giường và siết chặt cổ nạn nhân với lực cực lớn cho đến khi cảm biến không còn nhận diện nhịp tim, sau đó tự động rụt lại vào hốc bí mật. Hung thủ đã giết người từ khoảng cách hàng trăm cây số.
+🕵️‍♂️ Vụ án số 9: Chuyến bay ngột ngạt
+Độ khó: 5.5/5 (Thiên về tư duy hệ thống, logic loại trừ biến số môi trường)
+ĐỀ BÀI:
+"Một phi công đang lái một chiếc máy bay trực thăng tư nhân chở theo 3 hành khách VIP. Khi đang bay ở độ cao ổn định và thời tiết hoàn hảo, phi công bất ngờ quay lại, dùng súng bắn chết cả 3 hành khách. Ngay sau đó, anh ta mở cửa buồng lái và nhảy xuống đất tự sát mà không hề mặc áo dù. Toàn bộ quá trình được hộp đen ghi lại. Anh ta không bị điên, không bị ép buộc, và chiếc máy bay cũng không hề gặp trục trặc kỹ thuật. Tại sao anh ta lại hành động như vậy?"
+Gợi ý hướng câu hỏi (Turn-based logic):
+"Nếu không nhảy, anh ta cũng sẽ chết đúng không?" -> Đúng.
+"Các hành khách có mang theo thứ gì nguy hiểm không?" -> Sai.
+Hướng về môi trường bên ngoài máy bay: "Chiếc máy bay đang bay trên một khu vực đặc biệt đúng không?" -> Đúng.
+"Bên dưới mặt đất có mối nguy hiểm gì đó đúng không?" -> Đúng.
+Khóa mục tiêu logic: "Bên dưới là một thảm họa môi trường, và chiếc trực thăng thực chất đang hết nhiên liệu đúng không?" -> ĐÚNG.
+ĐÁP ÁN BÍ MẬT:
+Chiếc trực thăng này đang bay trên một vùng thung lũng cô lập, nơi vừa xảy ra một vụ rò rỉ khí độc chết người ở mật độ cao bao phủ toàn bộ mặt đất. Khi đang bay qua đây, phi công phát hiện kim báo nhiên liệu bị hỏng và máy bay sẽ cạn kiệt xăng trong vòng 5 phút nữa, buộc phải rơi xuống thung lũng đầy khí độc kia.
+Trên máy bay chỉ có duy nhất 1 chiếc mặt nạ chống độc dự phòng (phòng trường hợp khẩn cấp). Phi công hiểu rằng nếu máy bay rơi, cả 4 người sẽ phải trải qua cái chết đau đớn và từ từ do nhiễm độc khí. Để giúp 3 hành khách thoát khỏi sự tra tấn kinh hoàng đó, anh ta chọn cách bắn chết họ để họ ra đi nhanh chóng. Sau đó, anh ta nhảy xuống mà không cần dù để tự kết liễu đời mình trước khi máy bay lao xuống biển lửa hoặc vùng khí độc bên dưới.
+
+
+
+

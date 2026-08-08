@@ -1,0 +1,31 @@
+# Dependencies
+/node_modules
+
+# Next.js
+/.next
+/out
+
+# Tests
+/coverage
+
+# Local environment and secrets
+.env
+.env.local
+.env.*.local
+
+# Logs and OS files
+*.log
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+
+# Vercel and all local environment files
+.vercel/
+.env*
+!.env.example
+
+# Plaintext OG passwords — keep only on organizer's Mac
+docs/OG_ACCOUNTS.md
