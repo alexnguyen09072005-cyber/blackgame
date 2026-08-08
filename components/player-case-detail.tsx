@@ -64,6 +64,7 @@ type PlayerStateResponse = { data: PlayerStateData };
 
 type PlayResponse = {
   data: {
+    team: TeamSummary;
     interaction: PlayerInteraction;
     results: PlayerResult[] | null;
     duplicate: boolean;
@@ -305,6 +306,22 @@ export function PlayerCaseDetail() {
     invalidateRequest();
   }
 
+  function hydratePlayResponse(response: PlayResponse["data"]) {
+    setTeam(response.team);
+    setInteractions((current) =>
+      [
+        response.interaction,
+        ...current.filter(
+          (interaction) => interaction.id !== response.interaction.id,
+        ),
+      ].sort(
+        (left, right) =>
+          right.submittedAt - left.submittedAt || left.id.localeCompare(right.id),
+      ),
+    );
+    setSyncWarning("");
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!caseItem) return;
@@ -340,18 +357,20 @@ export function PlayerCaseDetail() {
         }),
       });
 
+      hydratePlayResponse(response.data);
+
       if (response.data.interaction.status === "PENDING") {
         pendingInteractionIdRef.current = interactionId;
         setPendingInteractionId(interactionId);
         setNotice("Nội dung đã được ghi nhận và đang chờ AI chấm. Trang sẽ tự cập nhật kết quả.");
-        await loadState(true);
         return;
       }
 
-      const freshState = await loadState(true);
-      const freshTeam = freshState?.team || team;
-      const freshQuota = quotaValues(freshTeam);
-      const cooldownActive = Boolean(freshTeam?.cooldownUntil && freshTeam.cooldownUntil > Date.now());
+      const freshQuota = quotaValues(response.data.team);
+      const cooldownActive = Boolean(
+        response.data.team.cooldownUntil &&
+          response.data.team.cooldownUntil > Date.now(),
+      );
       const result = response.data.results?.[0] || response.data.interaction.results?.[0] || null;
 
       interactionIdRef.current = null;

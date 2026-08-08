@@ -134,7 +134,7 @@ describe("POST /api/play", () => {
       finalizedAt: 1_002,
       finalResults: [result],
     };
-    const teamState: TeamState = {
+    const teamStateBefore: TeamState = {
       teamId: "og-01",
       questionCount: 0,
       cooldownUntil: null,
@@ -142,9 +142,18 @@ describe("POST /api/play", () => {
       lastInteractionAt: null,
       turnItemsUsed: 0,
     };
+    const teamStateAfter: TeamState = {
+      ...teamStateBefore,
+      questionCount: 1,
+      lastInteractionAt: 1_000,
+      turnItemsUsed: 1,
+    };
     const store = {
       getInteraction: vi.fn().mockResolvedValue(null),
-      getTeamState: vi.fn().mockResolvedValue(teamState),
+      getTeamState: vi
+        .fn()
+        .mockResolvedValueOnce(teamStateBefore)
+        .mockResolvedValueOnce(teamStateAfter),
       createInteraction: vi.fn().mockResolvedValue({
         kind: "CREATED",
         value: { interaction: pending, duplicate: false },
@@ -175,6 +184,13 @@ describe("POST /api/play", () => {
     await expect(response.json()).resolves.toMatchObject({
       data: {
         duplicate: false,
+        team: {
+          teamId: "og-01",
+          questionCount: 1,
+          turnItemsUsed: 1,
+          turnItemsRemaining: 4,
+          lastInteractionAt: 1_000,
+        },
         results: [
           {
             itemId: question.id,

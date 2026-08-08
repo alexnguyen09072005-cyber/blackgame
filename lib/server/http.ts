@@ -2,6 +2,11 @@ import "server-only";
 
 import { ZodError, type ZodType } from "zod";
 
+import {
+  RedisConfigurationError,
+  RedisUnavailableError,
+} from "./redis";
+
 const MAX_JSON_BODY_BYTES = 32 * 1024;
 
 async function readBoundedRequestBody(
@@ -146,6 +151,20 @@ export function withApiErrors<T extends ApiHandler>(handler: T): T {
               message: issue.message,
             })),
           }),
+        );
+      }
+      if (
+        error instanceof RedisConfigurationError ||
+        error instanceof RedisUnavailableError
+      ) {
+        const requestId = crypto.randomUUID();
+        // Do not log SDK messages: they can contain endpoints or credentials.
+        console.error("[api] Kho dữ liệu không khả dụng", {
+          requestId,
+          name: error.name,
+        });
+        return jsonError(
+          new ApiError(503, error.code, error.message, { requestId }),
         );
       }
       const requestId = crypto.randomUUID();

@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { isIP } from "node:net";
 
 import { ApiError } from "./http";
+import { redisKey, runRedisOperation } from "./redis";
 
 export const LOGIN_RATE_LIMIT_WINDOW_SECONDS = 60;
 export const LOGIN_RATE_LIMIT_PER_IP = 30;
@@ -11,29 +12,26 @@ export const LOGIN_RATE_LIMIT_GLOBAL = 60;
 
 const MAX_FORWARDED_FOR_LENGTH = 512;
 const MAX_FORWARDED_HOPS = 16;
+const LOGIN_RATE_LIMIT_KEY_TTL_SECONDS =
+  LOGIN_RATE_LIMIT_WINDOW_SECONDS * 2;
 
-type LoginRateLimitStore = {
-  bucket: number;
-  globalCount: number;
-  ipCounts: Map<string, number>;
-};
+const CHARGE_LOGIN_ATTEMPT_SCRIPT = `
+local ipCount = redis.call("INCR", KEYS[1])
+if ipCount == 1 then
+  redis.call("EXPIRE", KEYS[1], ARGV[1])
+end
 
-const globalWithLoginRateLimit = globalThis as typeof globalThis & {
-  __blackStoriesLoginRateLimitStore?: LoginRateLimitStore;
-};
+local globalCount = redis.call("INCR", KEYS[2])
+if globalCount == 1 then
+  redis.call("EXPIRE", KEYS[2], ARGV[1])
+end
+
+return { ipCount, globalCount }
+`;
 
 type LoginRateLimitOptions = {
   now?: number;
 };
-
-function loginRateLimitStore(): LoginRateLimitStore {
-  globalWithLoginRateLimit.__blackStoriesLoginRateLimitStore ??= {
-    bucket: -1,
-    globalCount: 0,
-    ipCounts: new Map<string, number>(),
-  };
-  return globalWithLoginRateLimit.__blackStoriesLoginRateLimitStore;
-}
 
 /**
  * Vercel supplies x-forwarded-for. We use only the nearest (right-most) hop so
@@ -68,11 +66,9 @@ function retryAfterSeconds(now: number): number {
 }
 
 /**
- * Charges a login attempt before the synchronous scrypt verification runs.
- * The process-local store deliberately lives on globalThis so Fast Refresh does
- * not reset it during local development. On Vercel, each instance has its own
- * counter; this is a lightweight guard for this small app, not a distributed
- * rate limiter.
+ * Charges the per-IP and global fixed-window counters atomically before the
+ * synchronous scrypt verification runs. Missing or unavailable Redis fails
+ * closed, so short event access codes never bypass the distributed limiter.
  */
 export async function enforceLoginRateLimit(
   request: Request,
@@ -84,21 +80,31 @@ export async function enforceLoginRateLimit(
   const addressHash = hashClientAddress(
     clientAddressFromHeaders(request.headers),
   );
+  const ipKey = redisKey("login", "ip", addressHash, String(bucket));
+  const globalKey = redisKey("login", "global", String(bucket));
 
-  const store = loginRateLimitStore();
-  if (store.bucket !== bucket) {
-    store.bucket = bucket;
-    store.globalCount = 0;
-    store.ipCounts.clear();
-  }
-
-  const ipCount = (store.ipCounts.get(addressHash) ?? 0) + 1;
-  store.ipCounts.set(addressHash, ipCount);
-  store.globalCount += 1;
+  const [ipCount, globalCount] = await runRedisOperation(async (redis) => {
+    const result = await redis.eval<unknown[]>(
+      CHARGE_LOGIN_ATTEMPT_SCRIPT,
+      [ipKey, globalKey],
+      [String(LOGIN_RATE_LIMIT_KEY_TTL_SECONDS)],
+    );
+    if (
+      !Array.isArray(result) ||
+      result.length !== 2 ||
+      result.some(
+        (value) =>
+          !Number.isSafeInteger(Number(value)) || Number(value) < 1,
+      )
+    ) {
+      throw new Error("Invalid login rate-limit response");
+    }
+    return [Number(result[0]), Number(result[1])] as const;
+  });
 
   if (
     ipCount > LOGIN_RATE_LIMIT_PER_IP ||
-    store.globalCount > LOGIN_RATE_LIMIT_GLOBAL
+    globalCount > LOGIN_RATE_LIMIT_GLOBAL
   ) {
     throw new ApiError(
       429,

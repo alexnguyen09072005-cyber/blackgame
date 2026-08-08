@@ -1,8 +1,8 @@
 # BLACK STORIES — 12 OG
 
 Ứng dụng mobile-first để 12 OG tự đăng nhập, chọn một trong 9 vụ án, hỏi hoặc
-gửi đáp án cuối và nhận phán quyết tự động từ OpenAI. Tiến độ, cooldown và bảng
-xếp hạng được giữ trong bộ nhớ của tiến trình Next.js.
+gửi đáp án cuối và nhận phán quyết tự động từ OpenAI. Tiến độ, cooldown, quota
+và bảng xếp hạng được giữ trong một Upstash Redis dùng chung.
 
 Không có backend tách riêng: các file trong `app/api` được Vercel chạy dưới dạng
 serverless functions. Phần server tối thiểu này là nơi giữ API key, đáp án bí
@@ -21,8 +21,9 @@ mật, phiên đăng nhập và state của lượt chơi.
 
 Mỗi `interactionId` là idempotent: gửi lại cùng nội dung không chiếm thêm slot,
 không cộng câu hỏi và không gọi AI lần nữa. Quyền sở hữu OG luôn được lấy từ
-cookie phiên đăng nhập, không lấy từ body phía client. Trong một server process,
-request đồng thời của cùng OG được kiểm tra/chốt quota trước khi gọi AI.
+cookie phiên đăng nhập, không lấy từ body phía client. Redis chốt quota,
+idempotency và AI lease bằng thao tác nguyên tử trước khi gọi model, kể cả khi
+Vercel chạy nhiều function instance cùng lúc.
 
 ## Tài khoản 12 OG
 
@@ -35,9 +36,8 @@ kiện ngắn. Bảng mật khẩu để in và phát riêng nằm tại
 > công khai và không chia sẻ nguyên file tài khoản cho người chơi.
 
 Runtime chỉ dùng hash `scrypt` của mật khẩu. Cookie phiên được ký, `HttpOnly`,
-`SameSite=Lax` và bật `Secure` ở production. Login được giới hạn theo cửa sổ 60
-giây trong từng tiến trình trước khi chạy `scrypt` (30 lần/IP, 60 lần toàn hệ
-thống).
+`SameSite=Lax` và bật `Secure` ở production. Login được giới hạn bằng cửa sổ cố
+định Redis 60 giây trước khi chạy `scrypt` (30 lần/IP, 60 lần toàn hệ thống).
 
 ## Cài đặt local
 
@@ -66,6 +66,9 @@ npm run build
 | `OPENAI_MODEL` | Model chấm tự động, mặc định `gpt-5.6-terra` |
 | `MAX_AI_CALLS` | Giới hạn số call AI phía ứng dụng, mặc định `500` |
 | `SESSION_SECRET` | Chuỗi ngẫu nhiên tối thiểu 32 ký tự ở production |
+| `UPSTASH_REDIS_REST_URL` | REST URL của Upstash Redis; bắt buộc |
+| `UPSTASH_REDIS_REST_TOKEN` | REST token của cùng database; bắt buộc |
+| `BLACKGAME_REDIS_PREFIX` | Namespace key, mặc định `blackgame:v1` |
 | `EVENT_TIMEZONE` | Múi giờ hiển thị, mặc định `Asia/Singapore` |
 
 Sinh session secret bằng trình quản lý mật khẩu hoặc:
@@ -74,9 +77,12 @@ Sinh session secret bằng trình quản lý mật khẩu hoặc:
 openssl rand -base64 48
 ```
 
-Không commit `.env.local`. Khi chưa có `OPENAI_API_KEY`, người chơi vẫn có thể
-đăng nhập và xem vụ án, nhưng server sẽ từ chối lượt chơi với thông báo rõ ràng
-**trước khi** đặt cooldown hay cộng số câu hỏi.
+Không commit `.env.local`. Alias cũ `KV_REST_API_URL` và `KV_REST_API_TOKEN`
+cũng được chấp nhận cho Vercel KV đã migrate, nhưng không trộn URL/token giữa
+hai cặp tên. Ứng dụng không fallback về RAM: thiếu hoặc lỗi Redis sẽ trả 503 an
+toàn. Khi chưa có `OPENAI_API_KEY`, người chơi vẫn có thể đăng nhập và xem vụ
+án, nhưng server sẽ từ chối lượt chơi với thông báo rõ ràng **trước khi** đặt
+cooldown hay cộng số câu hỏi.
 
 ## Dữ liệu vụ án và cách chấm
 
@@ -106,21 +112,26 @@ Thứ tự được tính theo:
 Endpoint công khai chỉ trả dữ liệu bảng xếp hạng và tuyệt đối không trả đáp án,
 ghi chú nội bộ hay nội dung chấm AI.
 
-### Giới hạn của bản không database
+### Trạng thái dùng chung trên Redis
 
-State chỉ tồn tại trong RAM: restart local server sẽ reset toàn bộ tiến độ. Trên
-Vercel, cold start hoặc nhiều function instance có thể khiến state mất hay không
-đồng nhất giữa 12 OG. Bản này phù hợp để test nhanh; chạy sự kiện thật trên
-Vercel cần bổ sung một kho dữ liệu dùng chung nếu muốn leaderboard bền vững.
+Mọi route đọc/ghi cùng namespace `BLACKGAME_REDIS_PREFIX`, nên cold start,
+redeploy và các Vercel Function riêng không làm mất lịch sử. Dùng database riêng
+cho sự kiện hoặc prefix khác nhau cho Preview và Production; không trỏ hai môi
+trường vào cùng prefix. Redis REST client tắt cache và giữ read-your-writes.
 
 ## Deploy Vercel
 
 1. Tạo OpenAI project riêng cho sự kiện, đặt spend limit rồi lấy API key.
 2. Push source lên một GitHub repository **Private**.
-3. Import repository vào Vercel và thêm toàn bộ biến trong `.env.example`.
-4. Deploy, đăng nhập cùng một OG trên hai thiết bị, gửi xen kẽ 5 nội dung và xác
+3. Trong Vercel Marketplace, tạo/kết nối Upstash Redis với project; chọn region
+   gần Vercel Function và xác nhận hai biến REST đã được inject.
+4. Thêm các biến còn lại trong `.env.example`, đặt prefix riêng cho Production,
+   rồi redeploy để deployment nhận credentials mới.
+5. Đăng nhập cùng một OG trên hai thiết bị, gửi xen kẽ 5 nội dung và xác
    nhận thiết bị gửi sau bị cooldown cùng tài khoản.
 
-Trước giờ chơi, restart tiến trình để xóa dữ liệu thử, kiểm tra đủ 12 tài khoản
-và thử các phán quyết Câu hỏi/Đáp án cuối trên cả 9 vụ án. Không coi deploy là
-hoàn tất cho đến khi URL production đã được smoke test bằng điện thoại thật.
+Trước giờ chơi, đổi `BLACKGAME_REDIS_PREFIX` sang namespace mới, chẳng hạn
+`blackgame:event-20260808`, rồi redeploy để bắt đầu với state sạch mà không cần
+FLUSH cả database. Sau đó kiểm tra đủ 12 tài khoản và thử các phán quyết Câu
+hỏi/Đáp án cuối trên cả 9 vụ án. Không coi deploy là hoàn tất cho đến khi URL
+production đã được smoke test bằng điện thoại thật.

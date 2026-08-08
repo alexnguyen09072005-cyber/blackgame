@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   authenticatePlayer: vi.fn(),
@@ -19,6 +19,7 @@ vi.mock("@/lib/server/login-rate-limit", () => ({
 
 import { POST } from "../../app/api/auth/login/route";
 import { ApiError } from "../../lib/server/http";
+import { RedisUnavailableError } from "../../lib/server/redis";
 
 function loginRequest(): Request {
   return new Request("https://example.test/api/auth/login", {
@@ -33,6 +34,10 @@ function loginRequest(): Request {
 
 beforeEach(() => {
   vi.clearAllMocks();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 describe("POST /api/auth/login rate limit", () => {
@@ -59,5 +64,22 @@ describe("POST /api/auth/login rate limit", () => {
       expect.any(Request),
     );
     expect(mocks.authenticatePlayer).not.toHaveBeenCalled();
+  });
+
+  it("fail closed với 503 nếu Redis gián đoạn", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    mocks.enforceLoginRateLimit.mockRejectedValueOnce(
+      new RedisUnavailableError(new Error("secret Redis details")),
+    );
+
+    const response = await POST(loginRequest());
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toMatchObject({
+      error: "REDIS_UNAVAILABLE",
+      message: "Kho dữ liệu tạm thời không khả dụng. Vui lòng thử lại.",
+    });
+    expect(mocks.authenticatePlayer).not.toHaveBeenCalled();
+    expect(mocks.setSession).not.toHaveBeenCalled();
   });
 });

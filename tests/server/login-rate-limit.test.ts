@@ -1,4 +1,16 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const mocks = vi.hoisted(() => ({
+  eval: vi.fn(),
+  runRedisOperation: vi.fn(),
+}));
+
+vi.mock("../../lib/server/redis", () => ({
+  RedisConfigurationError: class RedisConfigurationError extends Error {},
+  RedisUnavailableError: class RedisUnavailableError extends Error {},
+  redisKey: (...parts: string[]) => ["blackgame:v1", ...parts].join(":"),
+  runRedisOperation: mocks.runRedisOperation,
+}));
 
 import {
   clientAddressFromHeaders,
@@ -24,6 +36,24 @@ async function chargeAttempts(
     await enforceLoginRateLimit(requestWithForwardedFor(address), { now });
   }
 }
+
+beforeEach(() => {
+  const counters = new Map<string, number>();
+  mocks.eval.mockReset();
+  mocks.eval.mockImplementation(
+    async (_script: string, keys: string[]) =>
+      keys.map((key) => {
+        const count = (counters.get(key) ?? 0) + 1;
+        counters.set(key, count);
+        return count;
+      }),
+  );
+  mocks.runRedisOperation.mockReset();
+  mocks.runRedisOperation.mockImplementation(
+    async (operation: (redis: { eval: typeof mocks.eval }) => Promise<unknown>) =>
+      operation({ eval: mocks.eval }),
+  );
+});
 
 describe("login rate limiter", () => {
   it("dùng hop gần nhất đã kiểm tra định dạng và gom header lỗi vào bucket chung", () => {
@@ -98,5 +128,32 @@ describe("login rate limiter", () => {
         now: 360_000,
       }),
     ).resolves.toBeUndefined();
+  });
+
+  it("tăng counter IP và global trong cùng một Lua operation có TTL", async () => {
+    await enforceLoginRateLimit(
+      requestWithForwardedFor("203.0.113.11"),
+      { now: 125_000 },
+    );
+
+    expect(mocks.runRedisOperation).toHaveBeenCalledOnce();
+    expect(mocks.eval).toHaveBeenCalledWith(
+      expect.stringContaining('redis.call("INCR", KEYS[1])'),
+      [
+        `blackgame:v1:login:ip:${hashClientAddress("203.0.113.11")}:2`,
+        "blackgame:v1:login:global:2",
+      ],
+      ["120"],
+    );
+  });
+
+  it("fail closed nếu Redis không khả dụng", async () => {
+    mocks.runRedisOperation.mockRejectedValueOnce(
+      new Error("Redis unavailable"),
+    );
+
+    await expect(
+      enforceLoginRateLimit(requestWithForwardedFor("203.0.113.12")),
+    ).rejects.toThrow("Redis unavailable");
   });
 });

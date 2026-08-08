@@ -1,6 +1,7 @@
 import {
   serializePlayerInteraction,
   serializePlayerResults,
+  serializePlayerTeam,
   effectivePlayerCases,
   isStalePlayerInteraction,
 } from "@/app/api/player/_shared";
@@ -91,6 +92,28 @@ async function finalizeSavedResults(
   return store.finalizeInteraction(interaction.id, interaction.aiResults);
 }
 
+async function playerPlayResponse(
+  store: EventStore,
+  interaction: StoredInteraction,
+  duplicate: boolean,
+  status = 200,
+): Promise<Response> {
+  const team = serializePlayerTeam(
+    await store.getTeamState(interaction.teamId),
+  );
+  return jsonOk(
+    {
+      team,
+      interaction: serializePlayerInteraction(interaction),
+      results: serializePlayerResults(
+        interaction.finalResults ?? interaction.aiResults,
+      ),
+      duplicate,
+    },
+    status,
+  );
+}
+
 async function adjudicateAndFinalize(
   store: EventStore,
   interaction: StoredInteraction,
@@ -154,22 +177,14 @@ async function existingResponse(
     );
   }
   if (interaction.status === "FINALIZED") {
-    return jsonOk({
-      interaction: serializePlayerInteraction(interaction),
-      results: serializePlayerResults(interaction.finalResults),
-      duplicate: true,
-    });
+    return playerPlayResponse(store, interaction, true);
   }
   if (interaction.aiResults) {
     const finalized = await finalizeSavedResults(store, interaction);
     if (!finalized) {
       throw new ApiError(500, "FINALIZE_FAILED", "Không thể hoàn tất lượt chơi.");
     }
-    return jsonOk({
-      interaction: serializePlayerInteraction(finalized),
-      results: serializePlayerResults(finalized.finalResults),
-      duplicate: true,
-    });
+    return playerPlayResponse(store, finalized, true);
   }
   if (interaction.aiError) {
     throw recordedAiError(interaction.id);
@@ -189,11 +204,7 @@ async function existingResponse(
     if (latest?.aiResults) {
       const finalized = await finalizeSavedResults(store, latest);
       if (finalized) {
-        return jsonOk({
-          interaction: serializePlayerInteraction(finalized),
-          results: serializePlayerResults(finalized.finalResults),
-          duplicate: true,
-        });
+        return playerPlayResponse(store, finalized, true);
       }
     }
     if (latest?.aiError) {
@@ -210,24 +221,13 @@ async function existingResponse(
     }
     const finalized = await adjudicateAndFinalize(store, interaction);
     if (finalized) {
-      return jsonOk({
-        interaction: serializePlayerInteraction(finalized),
-        results: serializePlayerResults(finalized.finalResults),
-        duplicate: true,
-      });
+      return playerPlayResponse(store, finalized, true);
     }
   }
   // Another identical request owns the one AI call. The client can refresh
   // player state without creating or charging a second interaction.
   const latest = (await store.getInteraction(interaction.id)) ?? interaction;
-  return jsonOk(
-    {
-      interaction: serializePlayerInteraction(latest),
-      results: serializePlayerResults(latest.finalResults ?? latest.aiResults),
-      duplicate: true,
-    },
-    202,
-  );
+  return playerPlayResponse(store, latest, true, 202);
 }
 
 export const POST = withApiErrors(async (request: Request) => {
@@ -332,21 +332,7 @@ export const POST = withApiErrors(async (request: Request) => {
     if (latest.aiError) {
       throw recordedAiError(latest.id);
     }
-    return jsonOk(
-      {
-        interaction: serializePlayerInteraction(latest),
-        results: serializePlayerResults(latest.finalResults ?? latest.aiResults),
-        duplicate: false,
-      },
-      202,
-    );
+    return playerPlayResponse(store, latest, false, 202);
   }
-  return jsonOk(
-    {
-      interaction: serializePlayerInteraction(finalized),
-      results: serializePlayerResults(finalized.finalResults),
-      duplicate: false,
-    },
-    201,
-  );
+  return playerPlayResponse(store, finalized, false, 201);
 });
