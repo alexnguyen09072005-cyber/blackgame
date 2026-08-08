@@ -38,10 +38,25 @@ describe("cấu hình AI chấm tự động", () => {
       "đừng chọn cách hiểu máy móc, cực đoan hơn chỉ để trả SAI",
     );
     expect(ADJUDICATION_SYSTEM_PROMPT).toContain(
-      "KHONG_QUAN_TRONG thay vì SAI",
+      "Còn người sống khác đúng không?",
     );
     expect(ADJUDICATION_SYSTEM_PROMPT).toContain(
       "Trái Đất bị diệt vong đúng không?",
+    );
+  });
+
+  it("ưu tiên Có/Không cho giả thuyết liên quan và chỉ giữ KQT cho chi tiết thật sự không phân biệt lời giải", () => {
+    expect(ADJUDICATION_SYSTEM_PROMPT).toContain(
+      "Việc một câu không xuất hiện nguyên văn trong canon không đủ lý do",
+    );
+    expect(ADJUDICATION_SYSTEM_PROMPT).toContain(
+      "là hệ quả hợp lý, trực tiếp của canon",
+    );
+    expect(ADJUDICATION_SYSTEM_PROMPT).toContain(
+      "một giả thuyết cạnh tranh sẽ dẫn người chơi lệch khỏi lời giải",
+    );
+    expect(ADJUDICATION_SYSTEM_PROMPT).toContain(
+      "CHỈ dùng KHONG_QUAN_TRONG khi cả Có lẫn Không đều không giúp phân biệt lời giải",
     );
   });
 });

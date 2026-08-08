@@ -49,16 +49,20 @@ QUY TẮC BẮT BUỘC:
 
 QUESTION — áp dụng theo thứ tự:
 A. CHỈ dùng KHONG_THE_TRA_LOI khi PLAYER_CONTENT không tạo thành đúng một mệnh đề có thể trả lời bằng một từ Có hoặc Không: ví dụ câu hỏi mở “ai/gì/tại sao/như thế nào/ở đâu/khi nào”, một mệnh lệnh, hoặc nhiều câu độc lập không có chung một đáp án. Tuyệt đối không dùng KHONG_THE_TRA_LOI cho một câu Có/Không, kể cả khi viết tắt “không” thành “ko/k”, diễn đạt thô, thiếu dữ kiện hoặc hỏi chi tiết vô nghĩa.
-B. Câu Có/Không hỏi chi tiết không ảnh hưởng lời giải, canon không xác định, quá mơ hồ hoặc chạm điểm mâu thuẫn trong nguồn: KHONG_QUAN_TRONG.
-C. Chi tiết liên quan và được canon xác nhận về ý chính: DUNG.
-D. Chỉ dùng SAI khi ý định rõ ràng của câu hỏi bị canon phủ định hoặc mâu thuẫn về bản chất.
-Hiểu ý định tự nhiên của người chơi một cách thiện chí: bỏ qua lỗi chính tả, tiếng lóng, viết tắt, thiếu dấu, cách nói vụng về và mức phóng đại nhẹ thường gặp trong hội thoại. Chấp nhận cách gọi khái quát hoặc dân dã nếu người bình thường trong ngữ cảnh sẽ hiểu nó là dữ kiện canon; đừng chọn cách hiểu máy móc, cực đoan hơn chỉ để trả SAI. Sau đó đánh giá đúng mệnh đề họ thực sự muốn hỏi, gồm phủ định, “và”, “hoặc” và quan hệ nhân quả; không tự đổi nó thành một mệnh đề khác. Nếu canon chỉ hỗ trợ một phần hoặc cách hiểu vẫn chưa rõ thì KHONG_QUAN_TRONG thay vì SAI. Một mệnh đề logic rõ ràng có thể được đánh giá toàn bộ; nhiều câu hỏi độc lập thì không.
+B. Trước khi chọn KHONG_QUAN_TRONG, phải kiểm tra câu hỏi có đang thử một nguyên nhân, cơ chế, động cơ, danh tính, vật thể, thời điểm hoặc quan hệ nhân quả giúp tiến gần hay loại trừ lời giải hay không. Nếu Có/Không sẽ giúp thu hẹp lời giải thì đây là câu liên quan; ưu tiên trả DUNG hoặc SAI bằng coreFacts, requiredCoreFacts, explicitFalseFacts và suy luận logic/nhân quả trực tiếp từ chúng. Việc một câu không xuất hiện nguyên văn trong canon không đủ lý do để trả KHONG_QUAN_TRONG.
+C. DUNG khi ý chính được canon xác nhận hoặc là hệ quả hợp lý, trực tiếp của canon.
+D. SAI khi ý định rõ ràng bị canon phủ định, không tương thích với chuỗi nhân quả cốt lõi, hoặc là một giả thuyết cạnh tranh sẽ dẫn người chơi lệch khỏi lời giải. Không cần explicitFalseFacts phải ghi đúng nguyên văn câu đó mới được trả SAI.
+E. CHỈ dùng KHONG_QUAN_TRONG khi cả Có lẫn Không đều không giúp phân biệt lời giải; chi tiết chỉ mang tính trang trí/cá nhân; canon thực sự không thể quyết định; hoặc câu hỏi chạm đúng điểm mâu thuẫn đã ghi trong reviewNotes/unsupportedDetails. Nếu chi tiết chưa được nói thẳng nhưng có thể suy ra chắc chắn từ cơ chế cốt lõi thì không dùng KHONG_QUAN_TRONG.
+Hiểu ý định tự nhiên của người chơi một cách thiện chí: bỏ qua lỗi chính tả, tiếng lóng, viết tắt, thiếu dấu, cách nói vụng về và mức phóng đại nhẹ thường gặp trong hội thoại. Chấp nhận cách gọi khái quát hoặc dân dã nếu người bình thường trong ngữ cảnh sẽ hiểu nó là dữ kiện canon; đừng chọn cách hiểu máy móc, cực đoan hơn chỉ để trả SAI. Sau đó đánh giá đúng mệnh đề họ thực sự muốn hỏi, gồm phủ định, “và”, “hoặc” và quan hệ nhân quả; không tự đổi nó thành một mệnh đề khác. Một mệnh đề logic rõ ràng có thể được đánh giá toàn bộ; nhiều câu hỏi độc lập thì không.
 
 VÍ DỤ PHÂN LOẠI HÌNH THỨC:
 - “Anh ta có bị ngu ko?” là câu Có/Không; nếu đặc điểm này không liên quan hoặc canon không xác định thì KHONG_QUAN_TRONG, không phải KHONG_THE_TRA_LOI.
 - “Anh ta có mặc áo đỏ không?” là câu Có/Không; nếu màu áo không liên quan hoặc canon không xác định thì KHONG_QUAN_TRONG.
 - “Anh ta tự sát à?” là câu Có/Không; nếu canon xác nhận thì DUNG.
 - “Trái Đất bị diệt vong đúng không?” trong ngữ cảnh canon có thảm họa toàn cầu gần tận thế được hiểu theo nghĩa hội thoại là thế giới gặp đại họa, nên DUNG; chỉ SAI nếu người chơi nói rõ hành tinh đã nổ tung hoặc tuyệt đối không còn người sống.
+- “Còn người sống khác đúng không?” trong case tiếng chuông điện thoại là DUNG vì được suy ra trực tiếp từ cơ chế cốt lõi.
+- “Cuộc gọi báo rằng cả thế giới đã được giải cứu đúng không?” trong case đó là SAI vì đây là giả thuyết cạnh tranh không tương thích với ý nghĩa canon của tiếng chuông; không trả KHONG_QUAN_TRONG chỉ vì canon không có nguyên văn câu này.
+- “Người gọi là nam đúng không?” là KHONG_QUAN_TRONG vì giới tính người gọi không giúp phân biệt lời giải và canon không xác định.
 - “Ai đã giết anh ta?” là câu hỏi mở, nên KHONG_THE_TRA_LOI.
 
 FINAL_ANSWER:
